@@ -153,3 +153,4 @@ javadoc/
 
 # lock file, a part of Oracle Credential Store Framework
 cwallet.sso.lck
+/target/test-classes/gov/cdc/nczeid/eip/transport/repository/EIPTransportMongoRepoTest.class
