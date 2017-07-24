@@ -1,0 +1,290 @@
+swagger: '2.0'
+info:
+  title: EIP Messages Transport
+  description: Definitions of EIP transport services
+  version: 1.0.0
+host: 'localhost:8080'
+schemes:
+  - http
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /message:
+    post:
+      tags:
+        - Transport
+      summary: Send a new message to be stored within EIP
+      description: |
+        Single endpoint to receive a message and associated metadata.
+      parameters:
+        - in: body
+          name: body
+          description: Message metadata and content
+          required: true
+          schema:
+            $ref: '#/definitions/EIP_Message'
+      responses:
+        202:
+          description: |
+            Accepted - The message was accepted and stored in its raw format.
+
+            At this point, it doesn't not mean the message is valid or accurate since no validations or transformations will be performed on this stage.
+          schema:
+            $ref: '#/definitions/messageAccepted'
+          examples:
+            application/json:
+              tguid: "ASDF-ASD23-AS2334-1234-12FA"
+              status: "ACCEPTED"
+        400:
+          description: |
+            Bad Request - The JSON sent is not parseable or acceptable.
+          schema:
+            $ref: '#/definitions/bad_message'
+          examples:
+            application/json:
+              message: "Unable to parse payload sent to EIP Transport Service."
+              status: "BAD_PAYLOAD"
+        422:
+          description: |
+            Unprocessable Entity - Required Metadata is missing. This request is unprocessable.
+          schema:
+            $ref: '#/definitions/bad_message'
+          examples:
+            application/json:
+              message: "Payload sent is missing the HL7 content."
+              status: "MISSING_REQUIRED_INFO"
+        500:
+          description: |
+            Internal Server Error - If persistence fails, or any other internal issues arises.
+          schema:
+            $ref: '#/definitions/bad_message'
+          examples:
+            application/json:
+              message: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
+              status: "INTERNAL_ERROR"
+
+  /message/{GUID}/status:
+    get:
+      tags:
+        - Transport
+      summary: Retrieves the current status for the given message.
+      parameters:
+        - in: path
+          name: GUID
+          description: The GUID for the message we want to retrieve the status for
+          required: true
+          type: string
+      responses:
+        200:
+          description: |
+            The message exists and the current status is returned.
+          examples:
+            application/json:
+              status: Accepted
+        404:
+          description: |
+            The GUID provided does not exists on the system.
+        500:
+          description: |
+            Unable to process the request due to some Internal Server errors.
+  /messages/{system_id}/status:
+    get:
+      tags:
+        - Transport
+      summary: Retrieves a list of messages for a given timeframe and their status
+      parameters:
+        - in: path
+          name: system_id
+          description: the System ID that we want messages received from
+          required: true
+          type: string
+        - in: query
+          name: start_date
+          description: the start date for received messages.
+          required: true
+          type: string
+        - in: query
+          name: end_date
+          description: 'the end date for received messages. If not provided, assumes current date.'
+          default: current date
+          type: string
+          required: false
+      responses:
+        200:
+          description: |
+            The list of messages received from system_id for the given timeframe (start_date, end_date).
+definitions:
+  EIP_Message:
+    type: object
+    properties:
+      metadata:
+        type: object
+        properties:
+          version:
+            type: string
+            description: |
+              The current version of this message. Currently only 1.0 supported.
+            default: '1.0'
+      payload:
+        type: object
+        properties:
+          content:
+            type: string
+            description: |
+              The actual content of the message - the HL7 message itself.
+          content_length:
+            type: integer
+            format: Int32
+            description: |
+              The length in bytes of the content. Optional. Will be calculated by EIP if not present.
+          hash:
+            type: string
+            description: |
+              The hash for this message (content only). Can be used to validate the content has not been modified. Optional. will be calculated by EIP if not present.
+          multipart:
+            type: boolean
+            default: false
+            description: |
+              Whether the message is sent in multiple parts (batch/chunk)
+          multipart_id:
+            type: string
+            description: |
+              If the message is multipart (multipart=true), this property holds the identifier of each multipart.
+            default: 'MULTIPART_INDEX_{multipart_index}'
+          multipart_index:
+            type: string
+            format: Int32
+            description: |
+              The order in which the parts should be assembled. The index should start at 0 and follow sequentially. This attribute is ignored if multipart = false.
+          multipart_total:
+            type: string
+            format: Int32
+            description: |
+              The total number of parts that comprises this message.
+              (multipart_index should be sequential from 0 to multipart_total-1)
+        required:
+          - content
+      source:
+        $ref: '#/definitions/SOURCE_SYSTEM'
+    required:
+      - payload
+      - source
+    example:
+      application/json:
+        metadata:
+          version: '1.0'
+        source:
+          system: MIRTH-APHL
+          system_location: AIMS
+          system_id: AIMS-1
+          msg_indentifier: aims-0056
+          received_time: '2017-05-12T23:15:50.2Z'
+          sender: ''
+          recipient: ''
+          source_attributes:
+            - RECORDID: '1'
+          received_from:
+            system: PHIMS
+            system_location: GA
+            system_id: PHIN_MS
+            msg_identifier: phinms-ga-13-003
+            received_time: '2017-05-12T23:20:50.52Z'
+            sender: ''
+            recipient: ''
+            source_attributes:
+              - RECORDID: '1'
+              - MESSAGEID: ''
+              - PAYLOADNAME: ''
+              - LOCALFILENAME: ''
+              - SERVICE: SDP-CBR
+              - ACTION: send
+              - ARGUMENTS: ''
+              - FROMPARTYID: ''
+              - MESSAGERECIPIENT: ''
+              - ERRORCODE: 'null'
+              - ERRORMESSAGE: 'null'
+              - PROCESSINGSTATUS: ''
+              - APPLICATIONSTATUS: ''
+              - ENCRYPTION: ''
+              - RECEIVEDTIME: '2017-05-12 23:20:50'
+              - LASTUPDATETIME: '2017-05-12 23:20:50'
+              - PROCESSID: ''
+        payload:
+          Content: MSN|sdfsf|sdfsdfdsf|sdfsdfsdf|....
+          content_length: '345'
+  SOURCE_SYSTEM:
+    type: object
+    description: |
+      Holds information specific to the system that is sending the message. Several source instances can be concatenated with 'received_from' to track all systems this message passed through before reaching EIP (if the information is available).
+      At least one source should be present. AIMS should create an instance of this object to hold its own information. Further source systems can be appended using the recieved_from attribute.
+    properties:
+      system:
+        type: string
+        description: |
+          What type of system is sending the information. Possible values are PHINMS, MIRTH, etc.
+      system_location:
+        type: string
+        description: |
+          Where the system is installed at - the owner/administrator of the system.
+          It could be the Jurisdiction which operates the system, AIMS (APHL), etc.
+      system_id:
+        type: string
+        description: |
+          The identifier of the system that is sending the message. Should be unique for each system install sending messages.
+      msg_identifier:
+        type: string
+        description: |
+          The identifier for the message on this specific system. This could be used for tracking a message back on the original system.
+      received_time:
+        type: string
+        description: |
+          The time that the source system received the message. If it's the last system to send the message to EIP, this should hold the current timestamp as received_time.
+      recipient:
+        type: string
+        description: |
+          If available from the source, this will contain the information about the intended recipient of the message. If this information cannot be derived from the source, this field will be null.
+      sender:
+        type: string
+        description: |
+          If available from the source, this will contain the information about the sender of the message. If this information cannot be derived from the source, this field will be null.
+      source_attributes:
+        type: array
+        description: |
+          List of Name-value pairs of additional information provided by the source of the message.
+        items:
+          $ref: '#/definitions/SYSTEM_PROPS'
+      received_from:
+        $ref: '#/definitions/SOURCE_SYSTEM'
+    required:
+      - system_id
+  SYSTEM_PROPS:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    required:
+      - name
+      - value
+  messageAccepted:
+    type: object
+    properties:
+      tguid:
+        type: string
+      status:
+        type: string
+        enum: ['ACCEPTED']
+    required:
+      - tguid
+      - status
+  bad_message:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: ['BAD_PAYLOAD', 'MISSING_REQUIRED_INFO', 'INTERNAL_ERROR']
+      message:
+        type: string

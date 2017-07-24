@@ -1,0 +1,30 @@
+{
+  "groups": [{
+    "name": "",
+    "type": "gov.cdc.nczeid.eip.transport.About",
+    "sourceType": "gov.cdc.nczeid.eip.transport.About"
+  }],
+  "properties": [
+    {
+      "name": "contacts",
+      "type": "java.util.List<gov.cdc.nczeid.eip.transport.About.ContactInfo>",
+      "sourceType": "gov.cdc.nczeid.eip.transport.About"
+    },
+    {
+      "name": "docs",
+      "type": "java.lang.String",
+      "sourceType": "gov.cdc.nczeid.eip.transport.About"
+    },
+    {
+      "name": "summary",
+      "type": "java.lang.String",
+      "sourceType": "gov.cdc.nczeid.eip.transport.About"
+    },
+    {
+      "name": "versions",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "gov.cdc.nczeid.eip.transport.About"
+    }
+  ],
+  "hints": []
+}

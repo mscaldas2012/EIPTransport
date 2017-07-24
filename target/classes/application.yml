@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: EIPMessage-TRANSPORT
+
+server:
+  apiContext: api
+  versionContext: v

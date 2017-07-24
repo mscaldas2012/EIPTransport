@@ -1,0 +1,17 @@
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/rest/VersionRequestMappingHandlerMapping.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/model/Metadata.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/utils/InputStreamUtils.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/WebMvcConfig.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/controller/InfoServiceController.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/About.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/model/Payload.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/filter/RequestCacheWrapperFilter.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/repository/EIPTransportMongoRepo.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/rest/ApiVersion.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/model/EIPMessage.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/controller/MessageTransportController.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/model/ContentEncodings.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/services/EIPTransportService.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/rest/ApiVersionRequestMappingHandlerMapping.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/EIPTransportServices.java
+/Users/caldama/projects/work/EIP/EIPTransport/src/main/java/gov/cdc/nczeid/eip/transport/model/Source.java
