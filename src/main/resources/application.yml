@@ -5,3 +5,4 @@ spring:
 server:
   apiContext: api
   versionContext: v
+  port: 8081
